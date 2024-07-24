@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { CreateUpdateUserSerializer } from './user.serializer';
+import { CreateUserSerializer, UpdateUserSerializer } from './user.serializer';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 
 @Injectable()
@@ -12,10 +12,10 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(createUpdateUserSerializer: CreateUpdateUserSerializer): Promise<User> {
-    const { username } = createUpdateUserSerializer;
+  async create(createUserSerializer: CreateUserSerializer): Promise<User> {
+    const { username } = createUserSerializer;
     try {
-      const user = this.userRepository.create(createUpdateUserSerializer);
+      const user = this.userRepository.create(createUserSerializer);
       return await this.userRepository.save(user);
     } catch (error) {
       if (error instanceof QueryFailedError && error.message.includes('unique constraint')) {
@@ -44,8 +44,8 @@ export class UserService {
     return user;
   }
 
-  async update(id: string, createUpdateUserSerializer: CreateUpdateUserSerializer): Promise<User> {
-    await this.userRepository.update(id, createUpdateUserSerializer);
+  async update(id: string, updateUserSerializer: UpdateUserSerializer): Promise<User> {
+    await this.userRepository.update(id, updateUserSerializer);
     return this.userRepository.findOne({ where: { id } });
   }
 

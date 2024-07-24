@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, UsePipes } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { Task } from './entities/task.entity';
 import { Paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
@@ -11,6 +11,7 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post()
+  @HttpCode(200)
   @ApiOperation({ summary: 'Create a new task' })
   @ApiResponse({ status: 200, description: 'Task has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })

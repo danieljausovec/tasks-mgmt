@@ -41,7 +41,9 @@ export class TaskService {
   }
 
   async update(id: string, updateTaskSerializer: UpdateTaskSerializer): Promise<Task> {
-    await this.taskRepository.update(id, updateTaskSerializer);
+    const { userId, ...taskData } = updateTaskSerializer;
+    const user = await this.userService.findOne(userId);
+    await this.taskRepository.update(id, { ...taskData, user });
     return this.taskRepository.findOne({ where: { id } });
   }
 

@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Delete, Param, Body, Put, UsePipes, HttpCode } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
-import { CreateUpdateUserSerializer } from './user.serializer';
+import { CreateUserSerializer, UpdateUserSerializer } from './user.serializer';
 import { Paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UUIDValidationPipe } from '../pipes/uuid-validation.pipe';
@@ -16,8 +16,8 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'User has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  create(@Body() createUpdateUserSerializer: CreateUpdateUserSerializer): Promise<User> {
-    return this.userService.create(createUpdateUserSerializer);
+  create(@Body() createUserSerializer: CreateUserSerializer): Promise<User> {
+    return this.userService.create(createUserSerializer);
   }
 
   @Get()
@@ -43,8 +43,8 @@ export class UserController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   @UsePipes(new UUIDValidationPipe())
-  update(@Param('id') id: string, @Body() createUpdateUserSerializer: CreateUpdateUserSerializer): Promise<User> {
-    return this.userService.update(id, createUpdateUserSerializer);
+  update(@Param('id') id: string, @Body() updateUserSerializer: UpdateUserSerializer) {
+    return this.userService.update(id, updateUserSerializer);
   }
 
   @Delete(':id')

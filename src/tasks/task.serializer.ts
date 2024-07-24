@@ -1,8 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { TaskStatus } from './entities/task.entity';
+import { Exclude } from 'class-transformer';
 
 export class CreateTaskSerializer {
+  @Exclude()
+  id: string;
+
   @ApiProperty({ example: 'Lorem ipsum' })
   @IsString()
   @IsNotEmpty()
@@ -13,31 +17,23 @@ export class CreateTaskSerializer {
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ enum: TaskStatus, default: TaskStatus.TODO })
+  @Exclude()
   status: TaskStatus;
 
   @ApiProperty({ example: '3fcd40d9-0bd1-4b33-8488-c88b08ce0d60' })
   @IsString()
   @IsNotEmpty()
   userId: string;
+
+  @Exclude()
+  createdTimestamp: string;
+
+  @Exclude()
+  updatedTimestamp: string;
+
+  constructor(partial: Partial<CreateTaskSerializer>) {
+    Object.assign(this, partial);
+  }
 }
 
-export class UpdateTaskSerializer {
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  title?: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  description?: string;
-
-  @ApiProperty({ enum: TaskStatus, default: TaskStatus.TODO })
-  status?: TaskStatus;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  userId?: string;
-}
+export class UpdateTaskSerializer extends PartialType(CreateTaskSerializer) {}
