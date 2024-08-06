@@ -46,6 +46,19 @@ $ npm run migration:generate --name={task-name}
 $ npm run migration:run
 ```
 
+## How to run tests
+
+```bash
+# connect to container
+$ docker exec -it {container-id} sh
+
+# OPTIONAL: stops the execution of a script if a command or pipeline has an error
+$ set +e
+
+# run tests
+npm run test
+```
+
 ## Swagger
 
 ```

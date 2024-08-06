@@ -7,6 +7,8 @@ import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 
 @Injectable()
 export class UserService {
+  private readonly immutableFields = ['id', 'createdTimestamp', 'updatedTimestamp', 'tasks'];
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -45,6 +47,11 @@ export class UserService {
   }
 
   async update(id: string, updateUserSerializer: UpdateUserSerializer): Promise<User> {
+    for (const field of this.immutableFields) {
+      if (updateUserSerializer.hasOwnProperty(field)) {
+        throw new BadRequestException(`${field} field cannot be updated`);
+      }
+    }
     await this.userRepository.update(id, updateUserSerializer);
     return this.userRepository.findOne({ where: { id } });
   }
